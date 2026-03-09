@@ -3,36 +3,72 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>大将 Web Server</title>
-    <style>
-      body {
-        margin: 0;
-        font-family: system-ui, sans-serif;
-        background: #0f172a;
-        color: #e2e8f0;
-        display: grid;
-        place-items: center;
-        min-height: 100vh;
-      }
-      main {
-        max-width: 720px;
-        padding: 32px;
-        text-align: center;
-      }
-      h1 { font-size: 3rem; margin-bottom: 0.5rem; }
-      p { font-size: 1.1rem; line-height: 1.7; }
-      code {
-        background: #1e293b;
-        padding: 0.2rem 0.45rem;
-        border-radius: 6px;
-      }
-    </style>
+    <title>PCgene - 初心者向けPC構成診断</title>
+    <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <main>
-      <h1>大将、配置完了</h1>
-      <p>このサーバーは Docker 上の Nginx で動く想定です。</p>
-      <p>起動コマンド: <code>docker compose up -d --build</code></p>
+    <div class="bg"></div>
+    <main class="container">
+      <section class="hero card">
+        <p class="eyebrow">PCgene / MVP v0.1</p>
+        <h1>予算と用途から、<br />失敗しにくいPC構成を提案</h1>
+        <p class="lead">
+          PC初心者向けの構成診断アプリ。用途・予算・重視ポイントを選ぶだけで、
+          おすすめ構成と選定理由をわかりやすく表示します。
+        </p>
+      </section>
+
+      <section class="grid">
+        <form id="pc-form" class="card form-panel">
+          <h2>構成を診断する</h2>
+
+          <label>
+            <span>予算</span>
+            <select name="budget" required>
+              <option value="100000">10万円前後</option>
+              <option value="150000" selected>15万円前後</option>
+              <option value="200000">20万円前後</option>
+              <option value="300000">30万円前後</option>
+            </select>
+          </label>
+
+          <label>
+            <span>用途</span>
+            <select name="usage" required>
+              <option value="gaming" selected>ゲーム</option>
+              <option value="editing">動画編集</option>
+              <option value="streaming">配信</option>
+              <option value="ai">AI / 開発</option>
+              <option value="daily">普段使い</option>
+            </select>
+          </label>
+
+          <label>
+            <span>重視すること</span>
+            <select name="priority" required>
+              <option value="value" selected>コスパ</option>
+              <option value="performance">性能</option>
+              <option value="silent">静音</option>
+              <option value="future">将来性</option>
+            </select>
+          </label>
+
+          <button type="submit">おすすめ構成を見る</button>
+
+          <p class="note">
+            ※ 現在はMVP版です。価格や在庫は今後リアルタイム連携予定。
+          </p>
+        </form>
+
+        <section id="result" class="card result-panel">
+          <div class="result-empty">
+            <h2>診断結果</h2>
+            <p>左の条件を選んで、「おすすめ構成を見る」を押してください。</p>
+          </div>
+        </section>
+      </section>
     </main>
+
+    <script src="./app.js"></script>
   </body>
 </html>

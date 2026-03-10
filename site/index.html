@@ -4,18 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PCgene - 初心者向けPC構成診断</title>
+    <meta name="description" content="予算と用途を選ぶだけで、初心者向けに失敗しにくいPC構成を提案するPCgeneの試作版。" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
     <div class="bg"></div>
     <main class="container">
       <section class="hero card">
-        <p class="eyebrow">PCgene / MVP v0.1</p>
-        <h1>予算と用途から、<br />失敗しにくいPC構成を提案</h1>
-        <p class="lead">
-          PC初心者向けの構成診断アプリ。用途・予算・重視ポイントを選ぶだけで、
-          おすすめ構成と選定理由をわかりやすく表示します。
-        </p>
+        <div class="hero-copy">
+          <p class="eyebrow">PCgene / Preview</p>
+          <h1>PC初心者でも、<br />迷わず構成を選べる。</h1>
+          <p class="lead">
+            用途・予算・重視ポイントを選ぶだけで、おすすめ構成と理由をわかりやすく提案します。
+            将来的には価格比較・購入リンク・広告導線までまとめる予定です。
+          </p>
+          <div class="hero-points">
+            <span>初心者向け</span>
+            <span>予算別提案</span>
+            <span>用途別診断</span>
+            <span>収益化導線を想定</span>
+          </div>
+        </div>
       </section>
 
       <section class="grid">
@@ -55,17 +64,17 @@
 
           <button type="submit">おすすめ構成を見る</button>
 
-          <p class="note">
-            ※ 現在はMVP版です。価格や在庫は今後リアルタイム連携予定。
-          </p>
+          <div class="mini-info">
+            <p><strong>このプレビューで見られるもの</strong></p>
+            <ul>
+              <li>用途別のおすすめ構成</li>
+              <li>初心者向けの選定理由</li>
+              <li>今後の購入導線の置き場</li>
+            </ul>
+          </div>
         </form>
 
-        <section id="result" class="card result-panel">
-          <div class="result-empty">
-            <h2>診断結果</h2>
-            <p>左の条件を選んで、「おすすめ構成を見る」を押してください。</p>
-          </div>
-        </section>
+        <section id="result" class="card result-panel"></section>
       </section>
     </main>
 

@@ -1,0 +1,10 @@
+{
+  "name": "pcgene",
+  "version": "0.1.0",
+  "private": true,
+  "description": "PC初心者向けのPC構成提案アプリ",
+  "scripts": {
+    "dev": "python3 -m http.server 8000 --directory site",
+    "serve": "python3 -m http.server 8000 --directory site"
+  }
+}

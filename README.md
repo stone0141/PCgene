@@ -6,8 +6,9 @@ PC初心者向けのPC構成提案アプリです。
 - 静的プレビュー版あり
 - 予算 / 用途 / 重視ポイントでおすすめ構成を表示
 - 初心者向けの説明つき
+- GitHub Pages デプロイ用 workflow 追加済み
 
-## 見る方法
+## ローカルで見る
 ### 1. すぐ見る
 ```bash
 python3 -m http.server 8000 --directory site
@@ -21,8 +22,12 @@ npm run dev
 起動後に以下を開く:
 - <http://localhost:8000>
 
+## 公開URL
+GitHub Pages が有効なら以下で公開されます:
+- <https://stone0141.github.io/PCgene/>
+
 ## 今後の予定
 - 構成ロジックの改善
 - 購入リンク実装
 - 広告導線実装
-- デプロイ対応
+- デプロイ後の公開品質向上

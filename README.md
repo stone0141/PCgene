@@ -7,6 +7,7 @@ PC初心者向けのPC構成提案アプリです。
 - 予算 / 用途 / 重視ポイントでおすすめ構成を表示
 - 初心者向けの説明つき
 - GitHub Pages デプロイ用 workflow 追加済み
+- Docker / Tailscale で公開しやすい形に調整済み
 
 ## ローカルで見る
 ### 1. すぐ見る
@@ -22,7 +23,14 @@ npm run dev
 起動後に以下を開く:
 - <http://localhost:8000>
 
-## 公開URL
+## Dockerで見る
+```bash
+docker compose up -d --build
+```
+
+- <http://localhost:8080>
+
+## 公開URL候補
 GitHub Pages が有効なら以下で公開されます:
 - <https://stone0141.github.io/PCgene/>
 

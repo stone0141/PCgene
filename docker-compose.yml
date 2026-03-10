@@ -1,7 +1,7 @@
 services:
-  web:
+  pcgene:
     build: .
-    container_name: taisho-web
+    container_name: pcgene-web
     ports:
       - "8080:80"
     restart: unless-stopped

@@ -68,6 +68,11 @@ body {
   color: var(--muted);
   background: rgba(15, 23, 42, 0.7);
 }
+.badge.highlight {
+  color: #dbeafe;
+  border-color: rgba(96,165,250,.35);
+  background: rgba(96,165,250,.14);
+}
 .grid {
   display: grid;
   grid-template-columns: 360px 1fr;
@@ -121,6 +126,27 @@ button:hover { filter: brightness(1.06); }
   gap: 10px;
   margin: 10px 0 18px;
 }
+.estimate-box {
+  margin: 18px 0 12px;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(34,197,94,.28);
+  background: rgba(34,197,94,.08);
+}
+.estimate-box strong {
+  display: block;
+  margin-bottom: 8px;
+}
+.estimate-box p {
+  margin: 0 0 6px;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #dcfce7;
+}
+.estimate-box span {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
 .parts {
   display: grid;
   gap: 12px;
@@ -141,14 +167,19 @@ button:hover { filter: brightness(1.06); }
 }
 .part .name {
   font-weight: 700;
+  margin-bottom: 6px;
+}
+.part .price {
+  color: #bfdbfe;
+  font-size: 0.95rem;
   margin-bottom: 10px;
 }
-.store-links {
+.store-links, .whole-links {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
-.store-links a {
+.store-links a, .whole-links a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -161,7 +192,7 @@ button:hover { filter: brightness(1.06); }
   font-size: 0.92rem;
   font-weight: 700;
 }
-.store-links a:hover {
+.store-links a:hover, .whole-links a:hover {
   background: rgba(96,165,250,.16);
 }
 .cta {
@@ -180,4 +211,5 @@ button:hover { filter: brightness(1.06); }
 }
 @media (max-width: 920px) {
   .grid { grid-template-columns: 1fr; }
+  .part { grid-template-columns: 1fr; }
 }

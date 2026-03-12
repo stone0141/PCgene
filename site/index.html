@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PCgene - 初心者向けPC構成診断</title>
-    <meta name="description" content="予算と用途を選ぶだけで、初心者向けに失敗しにくいPC構成を提案するPCgeneの試作版。" />
+    <title>PCgene - 自作PC見積もりジェネレーター</title>
+    <meta name="description" content="CPU・GPU・メモリ・SSD・電源・ケースを自分で選んで、初心者でもわかりやすくPC構成の見積もりを作れるPCgene。" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -12,64 +12,72 @@
     <main class="container">
       <section class="hero card">
         <div class="hero-copy">
-          <p class="eyebrow">PCgene / Preview</p>
-          <h1>PC初心者でも、<br />迷わず構成を選べる。</h1>
+          <p class="eyebrow">PCgene / Builder</p>
+          <h1>好きなパーツを選んで、<br />その場でPC見積もり。</h1>
           <p class="lead">
-            用途・予算・重視ポイントを選ぶだけで、おすすめ構成と理由をわかりやすく提案します。
-            将来的には価格比較・購入リンク・広告導線までまとめる予定です。
+            もう「おすすめ構成を眺めるだけ」ではなく、CPU・GPU・メモリ・SSD・電源・ケースを自分で選んで、
+            構成金額をすぐ確認できる形にした。初心者でも比較しやすいように、各パーツには商品リンクも付けている。
           </p>
           <div class="hero-points">
-            <span>初心者向け</span>
-            <span>予算別提案</span>
-            <span>用途別診断</span>
-            <span>収益化導線を想定</span>
+            <span>最新寄りパーツ</span>
+            <span>自分で選べる</span>
+            <span>価格目安つき</span>
+            <span>Amazon / 楽天導線あり</span>
           </div>
         </div>
       </section>
 
+      <section class="quick-presets card">
+        <div class="section-head">
+          <p class="eyebrow">Quick Start</p>
+          <h2>まずは用途別のたたき台から</h2>
+          <p class="muted">迷うなら、ここから近い構成を読み込んでから調整すればいい。</p>
+        </div>
+        <div class="preset-grid" id="preset-grid"></div>
+      </section>
+
       <section class="grid">
         <form id="pc-form" class="card form-panel">
-          <h2>構成を診断する</h2>
+          <h2>パーツを選んで見積もる</h2>
 
           <label>
-            <span>予算</span>
-            <select name="budget" required>
-              <option value="100000">10万円前後</option>
-              <option value="150000" selected>15万円前後</option>
-              <option value="200000">20万円前後</option>
-              <option value="300000">30万円前後</option>
-            </select>
+            <span>CPU</span>
+            <select name="cpu" id="cpu-select" required></select>
           </label>
 
           <label>
-            <span>用途</span>
-            <select name="usage" required>
-              <option value="gaming" selected>ゲーム</option>
-              <option value="editing">動画編集</option>
-              <option value="streaming">配信</option>
-              <option value="ai">AI / 開発</option>
-              <option value="daily">普段使い</option>
-            </select>
+            <span>GPU</span>
+            <select name="gpu" id="gpu-select" required></select>
           </label>
 
           <label>
-            <span>重視すること</span>
-            <select name="priority" required>
-              <option value="value" selected>コスパ</option>
-              <option value="performance">性能</option>
-              <option value="silent">静音</option>
-              <option value="future">将来性</option>
-            </select>
+            <span>メモリ</span>
+            <select name="memory" id="memory-select" required></select>
           </label>
 
-          <button type="submit">おすすめ構成を見る</button>
+          <label>
+            <span>ストレージ</span>
+            <select name="storage" id="storage-select" required></select>
+          </label>
+
+          <label>
+            <span>電源</span>
+            <select name="psu" id="psu-select" required></select>
+          </label>
+
+          <label>
+            <span>ケース</span>
+            <select name="case" id="case-select" required></select>
+          </label>
+
+          <button type="submit">この構成で見積もる</button>
 
           <div class="mini-info">
-            <p><strong>このプレビューで見られるもの</strong></p>
+            <p><strong>このページでできること</strong></p>
             <ul>
-              <li>用途別のおすすめ構成</li>
-              <li>初心者向けの選定理由</li>
-              <li>今後の購入導線の置き場</li>
+              <li>好きなパーツを組み合わせて金額確認</li>
+              <li>各パーツの商品ページへ移動</li>
+              <li>用途別のたたき台を読み込んで微調整</li>
             </ul>
           </div>
         </form>

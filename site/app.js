@@ -1,72 +1,85 @@
 const STORAGE_KEY = 'pcgene-build-v1';
-const DEFAULT_BUILD = { cpu: 'r7-9700x', gpu: 'rtx-5070', motherboard: 'b650', cooler: 'pa120', memory: 'ddr5-16x2-6000', storage: 'sn850x-2tb', psu: 'rm750e', case: 'lancool-216', os: 'win11-home' };
+const DEFAULT_BUILD = { cpu: 'r7-5700x', gpu: 'rtx-4060', motherboard: 'b550', cooler: 'ak400', memory: 'ddr4-16x2', storage: 'sn770-1tb', psu: 'rm650e', case: 'cc560-v2', os: 'win11-home' };
 const catalog = {
   cpu: [
-    { id: 'r5-9600x', name: 'AMD Ryzen 5 9600X', price: 43000, brand: 'amd', socket: 'am5', tdp: 65, rank: 2 },
-    { id: 'r7-9700x', name: 'AMD Ryzen 7 9700X', price: 58000, brand: 'amd', socket: 'am5', tdp: 65, rank: 4 },
-    { id: 'r7-9800x3d', name: 'AMD Ryzen 7 9800X3D', price: 92000, brand: 'amd', socket: 'am5', tdp: 120, rank: 5 },
-    { id: 'cu5-245k', name: 'Intel Core Ultra 5 245K', price: 52000, brand: 'intel', socket: 'lga1851', tdp: 125, rank: 2 },
-    { id: 'cu7-265k', name: 'Intel Core Ultra 7 265K', price: 64000, brand: 'intel', socket: 'lga1851', tdp: 125, rank: 4 }
+    { id: 'r5-5600', name: 'AMD Ryzen 5 5600', price: 18000, brand: 'amd', socket: 'am4', tdp: 65, rank: 1, tier: 'entry' },
+    { id: 'r7-5700x', name: 'AMD Ryzen 7 5700X', price: 26000, brand: 'amd', socket: 'am4', tdp: 65, rank: 2, tier: 'mid' },
+    { id: 'r7-9700x', name: 'AMD Ryzen 7 9700X', price: 58000, brand: 'amd', socket: 'am5', tdp: 65, rank: 4, tier: 'high' },
+    { id: 'cu7-265k', name: 'Intel Core Ultra 7 265K', price: 64000, brand: 'intel', socket: 'lga1851', tdp: 125, rank: 4, tier: 'high' }
   ],
   gpu: [
-    { id: 'rtx-4060', name: 'MSI GeForce RTX 4060 VENTUS 2X BLACK 8G OC', price: 52000, brand: 'nvidia', watt: 115, rank: 1 },
-    { id: 'rtx-5070', name: 'ZOTAC GAMING GeForce RTX 5070 SOLID OC', price: 108000, brand: 'nvidia', watt: 250, rank: 3 },
-    { id: 'rtx-5070-ti', name: 'MSI GeForce RTX 5070 Ti 16G VENTUS 3X OC', price: 148000, brand: 'nvidia', watt: 300, rank: 4 },
-    { id: 'rx-9070', name: 'ASRock Radeon RX 9070 Steel Legend 16GB', price: 118000, brand: 'radeon', watt: 240, rank: 3 },
-    { id: 'rx-9070-xt', name: 'SAPPHIRE PULSE Radeon RX 9070 XT 16GB', price: 138000, brand: 'radeon', watt: 304, rank: 4 }
+    { id: 'rtx-3060', name: 'GeForce RTX 3060 12GB', price: 42000, brand: 'nvidia', watt: 170, rank: 1, tier: 'entry' },
+    { id: 'rtx-4060', name: 'GeForce RTX 4060 8GB', price: 52000, brand: 'nvidia', watt: 115, rank: 2, tier: 'mid' },
+    { id: 'rtx-5070', name: 'GeForce RTX 5070 12GB', price: 108000, brand: 'nvidia', watt: 250, rank: 4, tier: 'high' },
+    { id: 'rx-9070', name: 'Radeon RX 9070 16GB', price: 118000, brand: 'radeon', watt: 240, rank: 4, tier: 'high' }
   ],
   motherboard: [
+    { id: 'b550', name: 'MSI B550M PRO-VDH WIFI', price: 16000, socket: 'am4' },
     { id: 'b650', name: 'MSI PRO B650-S WIFI', price: 26000, socket: 'am5' },
-    { id: 'x870', name: 'ASUS TUF GAMING X870-PLUS WIFI', price: 42000, socket: 'am5' },
-    { id: 'b860', name: 'ASUS TUF GAMING B860-PLUS WIFI', price: 32000, socket: 'lga1851' },
-    { id: 'z890', name: 'MSI PRO Z890-A WIFI', price: 46000, socket: 'lga1851' }
+    { id: 'b860', name: 'ASUS TUF GAMING B860-PLUS WIFI', price: 32000, socket: 'lga1851' }
   ],
   cooler: [
-    { id: 'ak400', name: 'DeepCool AK400', price: 5000, supports: ['am5', 'lga1851'] },
-    { id: 'pa120', name: 'Thermalright Peerless Assassin 120 SE', price: 7000, supports: ['am5', 'lga1851'] },
-    { id: 'ls720', name: 'DeepCool LS720 SE 360mm', price: 15000, supports: ['am5', 'lga1851'] }
+    { id: 'ak400', name: 'DeepCool AK400', price: 5000, supports: ['am4', 'am5', 'lga1851'] },
+    { id: 'pa120', name: 'Thermalright Peerless Assassin 120 SE', price: 7000, supports: ['am4', 'am5', 'lga1851'] },
+    { id: 'ls720', name: 'DeepCool LS720 SE 360mm', price: 15000, supports: ['am4', 'am5', 'lga1851'] }
   ],
   memory: [
-    { id: 'ddr5-16x2-5600', name: 'Crucial Pro DDR5-5600 16GB×2', price: 13000 },
-    { id: 'ddr5-16x2-6000', name: 'Corsair VENGEANCE DDR5-6000 16GB×2', price: 17000 },
-    { id: 'ddr5-32x2-6000', name: 'Corsair VENGEANCE DDR5-6000 32GB×2', price: 33000 }
+    { id: 'ddr4-16x2', name: 'DDR4-3200 16GB×2', price: 9000 },
+    { id: 'ddr5-16x2-5600', name: 'DDR5-5600 16GB×2', price: 13000 },
+    { id: 'ddr5-32x2-6000', name: 'DDR5-6000 32GB×2', price: 33000 }
   ],
   storage: [
     { id: 'sn770-1tb', name: 'WD_BLACK SN770 1TB NVMe SSD', price: 11000 },
     { id: '990evo-1tb', name: 'Samsung 990 EVO Plus 1TB', price: 14000 },
-    { id: 'sn850x-2tb', name: 'WD_BLACK SN850X 2TB', price: 22000 },
-    { id: '990pro-2tb', name: 'Samsung 990 PRO 2TB', price: 28000 }
+    { id: 'sn850x-2tb', name: 'WD_BLACK SN850X 2TB', price: 22000 }
   ],
   psu: [
     { id: 'cx650', name: 'Corsair CX650 80+ Bronze', price: 9000, watt: 650 },
     { id: 'rm650e', name: 'Corsair RM650e 80+ Gold', price: 15000, watt: 650 },
-    { id: 'rm750e', name: 'Corsair RM750e 80+ Gold', price: 17000, watt: 750 },
-    { id: 'focus-gx-850', name: 'Seasonic FOCUS GX-850 80+ Gold', price: 22000, watt: 850 }
+    { id: 'rm750e', name: 'Corsair RM750e 80+ Gold', price: 17000, watt: 750 }
   ],
   case: [
     { id: 'cc560-v2', name: 'DeepCool CC560 V2', price: 8000, image: 'https://placehold.co/640x480/0f172a/e2e8f0?text=DeepCool+CC560+V2' },
     { id: 'h5-flow-rgb', name: 'NZXT H5 Flow RGB', price: 15000, image: 'https://placehold.co/640x480/0f172a/e2e8f0?text=NZXT+H5+Flow+RGB' },
-    { id: 'lancool-216', name: 'Lian Li Lancool 216', price: 16000, image: 'https://placehold.co/640x480/0f172a/e2e8f0?text=Lancool+216' },
     { id: 'fractal-north', name: 'Fractal Design North', price: 24000, image: 'https://placehold.co/640x480/0f172a/e2e8f0?text=Fractal+North' }
   ],
   os: [
     { id: 'win11-home', name: 'Windows 11 Home', price: 19000 },
-    { id: 'win11-pro', name: 'Windows 11 Pro', price: 28000 },
     { id: 'no-os', name: 'OSなし / Linux前提', price: 0 }
   ]
 };
+const usedPcOffers = [
+  {
+    id: 'used-popular',
+    title: '人気No.1 中古ゲーミングPC',
+    subtitle: 'RTX 3060 / Ryzen 7クラス / すぐ遊べる完成品',
+    price: 89800,
+    badges: ['清掃・動作確認済み', '30日保証', 'OSセットアップ済み'],
+    cta: '中古PCショップを見る',
+    url: 'https://example.com/used-pc-popular'
+  },
+  {
+    id: 'used-cospa',
+    title: 'コスパ重視 中古PC',
+    subtitle: '新品より大きく安く、フルHDゲーム向け',
+    price: 79800,
+    badges: ['面倒な初期設定不要', '保証付き', '届いてすぐ使える'],
+    cta: 'コスパ重視モデルを見る',
+    url: 'https://example.com/used-pc-cospa'
+  }
+];
 const helpTexts = {
-  cpu: 'CPUはPCの頭脳。ゲームはGPU優先でも、配信や編集ならCPUも強めが安心。',
-  gpu: 'GPUはゲーム性能の中心。重いゲームを高画質で遊ぶなら最優先で予算を割く。',
-  motherboard: 'マザーボードはCPUの規格一致が必須。AMD用とIntel用は基本的に互換性がない。',
-  cooler: '最近のCPUはクーラー別売が多い。見落とすと予算も冷却も崩れる。',
-  memory: '迷ったら32GBが無難。配信・編集・AIなら容量に余裕が欲しい。',
-  psu: '電源は容量と品質が重要。ギリギリより少し余裕を持たせると安心。'
+  cpu: 'CPUはPCの頭脳。中古誘導も考えるなら、必要十分なラインを選ぶのがコツ。',
+  gpu: 'GPUはゲーム性能の中心。新品は高いので、中古完成品との比較材料にもなる。',
+  motherboard: 'マザーボードはCPU規格一致が必須。ここがズレると組めない。',
+  cooler: '最近はクーラー別売が多い。見落とすと予算漏れになる。',
+  memory: '迷ったら32GB寄りが安心。中古完成品なら最初から積まれている場合も多い。',
+  psu: '電源は容量と品質が重要。初心者は完成品中古の安心感も比較ポイント。'
 };
 const presets = [
-  { id: 'apex-144fps', title: 'Apex 144fps 構成', description: 'フルHD高fps寄りの王道ゲーミング。', picks: { cpu: 'r7-9700x', gpu: 'rtx-5070', motherboard: 'b650', cooler: 'pa120', memory: 'ddr5-16x2-6000', storage: 'sn850x-2tb', psu: 'rm750e', case: 'lancool-216', os: 'win11-home' } },
-  { id: 'yt-edit', title: 'YouTube 編集構成', description: '編集・書き出しをバランス良くこなす。', picks: { cpu: 'cu7-265k', gpu: 'rtx-5070', motherboard: 'b860', cooler: 'ls720', memory: 'ddr5-32x2-6000', storage: '990pro-2tb', psu: 'rm750e', case: 'h5-flow-rgb', os: 'win11-home' } },
-  { id: 'budget-100k', title: '予算10万円台構成', description: '価格を抑えつつ普段使いも安心。', picks: { cpu: 'r5-9600x', gpu: 'rtx-4060', motherboard: 'b650', cooler: 'ak400', memory: 'ddr5-16x2-5600', storage: 'sn770-1tb', psu: 'cx650', case: 'cc560-v2', os: 'no-os' } }
+  { id: 'apex-144fps', title: 'Apex 144fps 構成', description: '新品でしっかり組むならこの辺。', picks: { cpu: 'r7-5700x', gpu: 'rtx-4060', motherboard: 'b550', cooler: 'ak400', memory: 'ddr4-16x2', storage: 'sn770-1tb', psu: 'rm650e', case: 'cc560-v2', os: 'win11-home' } },
+  { id: 'used-popular-preset', title: '人気No.1 中古PC構成', description: '安く・早く・すぐ遊びたい人向け。', picks: { cpu: 'r7-5700x', gpu: 'rtx-3060', motherboard: 'b550', cooler: 'ak400', memory: 'ddr4-16x2', storage: 'sn770-1tb', psu: 'cx650', case: 'cc560-v2', os: 'win11-home' }, usedOfferId: 'used-popular' },
+  { id: 'budget-100k', title: '予算10万円台構成', description: '価格を抑えつつ普段使いも安心。', picks: { cpu: 'r5-5600', gpu: 'rtx-3060', motherboard: 'b550', cooler: 'ak400', memory: 'ddr4-16x2', storage: 'sn770-1tb', psu: 'cx650', case: 'cc560-v2', os: 'no-os' } }
 ];
 function formatYen(value) { return `約${Number(value).toLocaleString()}円`; }
 function makeAmazonUrl(keyword) { return `https://www.amazon.co.jp/s?k=${encodeURIComponent(keyword)}`; }
@@ -74,13 +87,7 @@ function makeRakutenUrl(keyword) { return `https://search.rakuten.co.jp/search/m
 function findPart(category, id) { return catalog[category].find((item) => item.id === id); }
 function brandAllowed(item, filter) { return filter === 'all' ? true : item.brand === filter; }
 function sortItems(items, order) { if (order === 'price-asc') return [...items].sort((a,b)=>a.price-b.price); if (order === 'price-desc') return [...items].sort((a,b)=>b.price-a.price); return items; }
-function showToast(message) {
-  const toast = document.getElementById('toast');
-  toast.textContent = message;
-  toast.hidden = false;
-  clearTimeout(showToast.timer);
-  showToast.timer = setTimeout(() => { toast.hidden = true; }, 2500);
-}
+function showToast(message) { const toast = document.getElementById('toast'); toast.textContent = message; toast.hidden = false; clearTimeout(showToast.timer); showToast.timer = setTimeout(()=>toast.hidden=true, 2500); }
 function populateSelect(category, selectId, preserveValue = true) {
   const select = document.getElementById(selectId);
   const previous = preserveValue ? select.value : '';
@@ -152,19 +159,38 @@ function setupResume() {
   if (!saved) return;
   const button = document.getElementById('resume-button');
   button.hidden = false;
-  button.addEventListener('click', () => {
-    applyState(JSON.parse(saved));
-    renderEstimate();
-    button.hidden = true;
-    showToast('前回の構成を復元しました。');
-  });
+  button.addEventListener('click', () => { applyState(JSON.parse(saved)); renderEstimate(); button.hidden = true; showToast('前回の構成を復元しました。'); });
 }
-function resetBuild() {
-  applyState(DEFAULT_BUILD);
-  history.replaceState({}, '', location.pathname);
-  localStorage.removeItem(STORAGE_KEY);
-  renderEstimate();
-  showToast('構成を初期状態に戻しました。');
+function resetBuild() { applyState(DEFAULT_BUILD); history.replaceState({}, '', location.pathname); localStorage.removeItem(STORAGE_KEY); renderEstimate(); showToast('構成を初期状態に戻しました。'); }
+function renderUsedPcCTA(total, parts) {
+  const offer = total >= 120000 ? usedPcOffers[0] : usedPcOffers[1];
+  return `
+    <div class="used-cta card-like">
+      <strong>予算オーバーですか？ 組み立てる自信がありませんか？</strong>
+      <p class="muted">同等用途の中古完成品なら <span class="accent-price">${formatYen(offer.price)}</span> から。新品で悩むより、すぐ遊べて安心な選択肢もあります。</p>
+      <div class="used-badges">${offer.badges.map((b) => `<span>${b}</span>`).join('')}</div>
+      <a class="used-button" href="${offer.url}" target="_blank" rel="noopener noreferrer">${offer.cta}</a>
+    </div>
+  `;
+}
+function renderComparison(total) {
+  return `
+    <div class="comparison-box">
+      <strong>新品 vs 中古 の目安</strong>
+      <div class="comparison-grid">
+        <div>
+          <h4>新品構成</h4>
+          <p>${formatYen(total)} 前後</p>
+          <span>好きなパーツを選べるが、費用と相性確認の手間がかかる。</span>
+        </div>
+        <div>
+          <h4>中古完成品</h4>
+          <p>${formatYen(usedPcOffers[1].price)}〜${formatYen(usedPcOffers[0].price)}</p>
+          <span>安く始めやすく、OS設定済み・保証付きで手間が少ない。</span>
+        </div>
+      </div>
+    </div>
+  `;
 }
 function renderEstimate() {
   const parts = getSelections();
@@ -189,18 +215,19 @@ function renderEstimate() {
       <span class="badge">OS込み</span>
     </div>
     <p class="lead">自分で選んだパーツ構成の概算金額です。足りないパーツも含めて、ちゃんと1台分の見積もりになるようにしています。</p>
+    ${renderUsedPcCTA(total, parts)}
     ${warningsHtml}
     ${bottleneckHtml}
     ${powerMeter}
     <div class="estimate-box"><strong>ざっくり総額</strong><p>${formatYen(total)} 前後</p><span>※ 価格は相場ベースの目安。セールや在庫で変動します。</span></div>
     <div class="share-box"><strong>この構成を共有する</strong><p class="muted">URLをコピーして「この構成どう？」と相談できます。</p><div class="share-actions"><input type="text" readonly value="${shareUrl}" id="share-url" /><button type="button" id="copy-share">URLをコピー</button></div></div>
     ${casePreview}
+    ${renderComparison(total)}
     <div class="parts">${partsHtml}</div>
     <div class="adbox"><strong>見積もりの見方</strong><p class="muted">まずは CPU・GPU・マザーボード・クーラー・電源の整合性を見ると失敗しにくい。Windows代も含めて総額を見るのが初心者には重要です。</p></div>
   `;
   ['copy-share','copy-share-main','copy-share-inline'].forEach((id) => {
-    const el = document.getElementById(id);
-    if (!el) return;
+    const el = document.getElementById(id); if (!el) return;
     el.addEventListener('click', async () => {
       try { await navigator.clipboard.writeText(shareUrl); showToast('共有URLをコピーしました。'); }
       catch { const input = document.getElementById('share-url'); if (input) { input.select(); document.execCommand('copy'); } }
@@ -209,7 +236,6 @@ function renderEstimate() {
 }
 function bindHelpButtons() { document.querySelectorAll('[data-help]').forEach((button) => button.addEventListener('click', () => { document.getElementById('help-text').textContent = helpTexts[button.dataset.help] || '説明は準備中です。'; })); }
 function refreshSelects() { ['cpu','gpu','motherboard','cooler','memory','storage','psu','case','os'].forEach((key) => populateSelect(key, `${key}-select`)); }
-
 document.getElementById('brand-filter').addEventListener('change', () => { refreshSelects(); renderEstimate(); });
 document.getElementById('sort-order').addEventListener('change', () => { refreshSelects(); renderEstimate(); });
 document.getElementById('reset-button').addEventListener('click', resetBuild);

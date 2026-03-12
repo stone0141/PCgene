@@ -6,14 +6,16 @@
     <title>PCgene - 自作PC見積もりジェネレーター</title>
     <meta name="description" content="CPU・GPU・マザーボード・クーラー・OSまで自分で選んで、初心者でもわかりやすくPC構成の見積もりを作れるPCgene。" />
     <meta property="og:title" content="PCgene - 自作PC見積もりジェネレーター" />
-    <meta property="og:description" content="好きなパーツを選んでPC構成の見積もりを作成。初心者向けの互換性警告や価格目安つき。" />
+    <meta property="og:description" content="PCパーツを選んで一発見積もり。互換性チェック・推奨電源・共有URLつき。" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://stone0141.github.io/PCgene/" />
+    <meta property="og:image" content="https://placehold.co/1200x630/0f172a/e2e8f0?text=PCgene+PC%E3%83%91%E3%83%BC%E3%83%84%E3%82%92%E9%81%B8%E3%82%93%E3%81%A7%E4%B8%80%E7%99%BA%E8%A6%8B%E7%A9%8D%E3%82%82%E3%82%8A" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
     <div class="bg"></div>
+    <div id="toast" class="toast" hidden></div>
     <main class="container">
       <section class="hero card">
         <div class="hero-copy">
@@ -49,7 +51,10 @@
         <form id="pc-form" class="card form-panel">
           <div class="panel-head">
             <h2>パーツを選んで見積もる</h2>
-            <button type="button" class="ghost-button" id="resume-button" hidden>前回の続きから再開</button>
+            <div class="panel-actions">
+              <button type="button" class="ghost-button" id="resume-button" hidden>前回の続きから再開</button>
+              <button type="button" class="ghost-button danger" id="reset-button">最初から作り直す</button>
+            </div>
           </div>
 
           <div class="toolbar">
@@ -73,50 +78,49 @@
             </label>
           </div>
 
-          <label>
-            <span>CPU <button type="button" class="help-inline" data-help="cpu">?</button></span>
-            <select name="cpu" id="cpu-select" required></select>
-          </label>
+          <details class="parts-group" open>
+            <summary>主要パーツ</summary>
+            <label>
+              <span>CPU <button type="button" class="help-inline" data-help="cpu">?</button></span>
+              <select name="cpu" id="cpu-select" required></select>
+            </label>
+            <label>
+              <span>GPU <button type="button" class="help-inline" data-help="gpu">?</button></span>
+              <select name="gpu" id="gpu-select" required></select>
+            </label>
+            <label>
+              <span>マザーボード <button type="button" class="help-inline" data-help="motherboard">?</button></span>
+              <select name="motherboard" id="motherboard-select" required></select>
+            </label>
+            <label>
+              <span>CPUクーラー <button type="button" class="help-inline" data-help="cooler">?</button></span>
+              <select name="cooler" id="cooler-select" required></select>
+            </label>
+          </details>
 
-          <label>
-            <span>GPU <button type="button" class="help-inline" data-help="gpu">?</button></span>
-            <select name="gpu" id="gpu-select" required></select>
-          </label>
-
-          <label>
-            <span>マザーボード <button type="button" class="help-inline" data-help="motherboard">?</button></span>
-            <select name="motherboard" id="motherboard-select" required></select>
-          </label>
-
-          <label>
-            <span>CPUクーラー <button type="button" class="help-inline" data-help="cooler">?</button></span>
-            <select name="cooler" id="cooler-select" required></select>
-          </label>
-
-          <label>
-            <span>メモリ <button type="button" class="help-inline" data-help="memory">?</button></span>
-            <select name="memory" id="memory-select" required></select>
-          </label>
-
-          <label>
-            <span>ストレージ</span>
-            <select name="storage" id="storage-select" required></select>
-          </label>
-
-          <label>
-            <span>電源 <button type="button" class="help-inline" data-help="psu">?</button></span>
-            <select name="psu" id="psu-select" required></select>
-          </label>
-
-          <label>
-            <span>ケース</span>
-            <select name="case" id="case-select" required></select>
-          </label>
-
-          <label>
-            <span>OS</span>
-            <select name="os" id="os-select" required></select>
-          </label>
+          <details class="parts-group" open>
+            <summary>その他パーツ</summary>
+            <label>
+              <span>メモリ <button type="button" class="help-inline" data-help="memory">?</button></span>
+              <select name="memory" id="memory-select" required></select>
+            </label>
+            <label>
+              <span>ストレージ</span>
+              <select name="storage" id="storage-select" required></select>
+            </label>
+            <label>
+              <span>電源 <button type="button" class="help-inline" data-help="psu">?</button></span>
+              <select name="psu" id="psu-select" required></select>
+            </label>
+            <label>
+              <span>ケース</span>
+              <select name="case" id="case-select" required></select>
+            </label>
+            <label>
+              <span>OS</span>
+              <select name="os" id="os-select" required></select>
+            </label>
+          </details>
 
           <button type="submit">この構成で見積もる</button>
 

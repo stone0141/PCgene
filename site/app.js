@@ -1,4 +1,5 @@
 const STORAGE_KEY = 'pcgene-build-v1';
+const DEFAULT_BUILD = { cpu: 'r7-9700x', gpu: 'rtx-5070', motherboard: 'b650', cooler: 'pa120', memory: 'ddr5-16x2-6000', storage: 'sn850x-2tb', psu: 'rm750e', case: 'lancool-216', os: 'win11-home' };
 const catalog = {
   cpu: [
     { id: 'r5-9600x', name: 'AMD Ryzen 5 9600X', price: 43000, brand: 'amd', socket: 'am5', tdp: 65, rank: 2 },
@@ -54,7 +55,6 @@ const catalog = {
     { id: 'no-os', name: 'OSなし / Linux前提', price: 0 }
   ]
 };
-
 const helpTexts = {
   cpu: 'CPUはPCの頭脳。ゲームはGPU優先でも、配信や編集ならCPUも強めが安心。',
   gpu: 'GPUはゲーム性能の中心。重いゲームを高画質で遊ぶなら最優先で予算を割く。',
@@ -63,25 +63,23 @@ const helpTexts = {
   memory: '迷ったら32GBが無難。配信・編集・AIなら容量に余裕が欲しい。',
   psu: '電源は容量と品質が重要。ギリギリより少し余裕を持たせると安心。'
 };
-
 const presets = [
   { id: 'apex-144fps', title: 'Apex 144fps 構成', description: 'フルHD高fps寄りの王道ゲーミング。', picks: { cpu: 'r7-9700x', gpu: 'rtx-5070', motherboard: 'b650', cooler: 'pa120', memory: 'ddr5-16x2-6000', storage: 'sn850x-2tb', psu: 'rm750e', case: 'lancool-216', os: 'win11-home' } },
   { id: 'yt-edit', title: 'YouTube 編集構成', description: '編集・書き出しをバランス良くこなす。', picks: { cpu: 'cu7-265k', gpu: 'rtx-5070', motherboard: 'b860', cooler: 'ls720', memory: 'ddr5-32x2-6000', storage: '990pro-2tb', psu: 'rm750e', case: 'h5-flow-rgb', os: 'win11-home' } },
   { id: 'budget-100k', title: '予算10万円台構成', description: '価格を抑えつつ普段使いも安心。', picks: { cpu: 'r5-9600x', gpu: 'rtx-4060', motherboard: 'b650', cooler: 'ak400', memory: 'ddr5-16x2-5600', storage: 'sn770-1tb', psu: 'cx650', case: 'cc560-v2', os: 'no-os' } }
 ];
-
 function formatYen(value) { return `約${Number(value).toLocaleString()}円`; }
 function makeAmazonUrl(keyword) { return `https://www.amazon.co.jp/s?k=${encodeURIComponent(keyword)}`; }
 function makeRakutenUrl(keyword) { return `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(keyword)}/`; }
 function findPart(category, id) { return catalog[category].find((item) => item.id === id); }
-function brandAllowed(item, filter) {
-  if (filter === 'all') return true;
-  return item.brand === filter;
-}
-function sortItems(items, order) {
-  if (order === 'price-asc') return [...items].sort((a, b) => a.price - b.price);
-  if (order === 'price-desc') return [...items].sort((a, b) => b.price - a.price);
-  return items;
+function brandAllowed(item, filter) { return filter === 'all' ? true : item.brand === filter; }
+function sortItems(items, order) { if (order === 'price-asc') return [...items].sort((a,b)=>a.price-b.price); if (order === 'price-desc') return [...items].sort((a,b)=>b.price-a.price); return items; }
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.hidden = false;
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => { toast.hidden = true; }, 2500);
 }
 function populateSelect(category, selectId, preserveValue = true) {
   const select = document.getElementById(selectId);
@@ -89,8 +87,7 @@ function populateSelect(category, selectId, preserveValue = true) {
   const brandFilter = document.getElementById('brand-filter')?.value || 'all';
   const sortOrder = document.getElementById('sort-order')?.value || 'default';
   let items = catalog[category];
-  if (category === 'cpu') items = items.filter((i) => brandAllowed(i, brandFilter));
-  if (category === 'gpu') items = items.filter((i) => brandAllowed(i, brandFilter));
+  if (category === 'cpu' || category === 'gpu') items = items.filter((i) => brandAllowed(i, brandFilter));
   items = sortItems(items, sortOrder);
   select.innerHTML = items.map((item) => `<option value="${item.id}">${item.name} / ${formatYen(item.price)}</option>`).join('');
   if (previous && items.some((i) => i.id === previous)) select.value = previous;
@@ -109,6 +106,7 @@ function getSelections() {
   };
 }
 function totalPrice(parts) { return Object.values(parts).reduce((sum, part) => sum + part.price, 0); }
+function estimatedUsage(cpu, gpu) { return cpu.tdp + gpu.watt + 120; }
 function recommendedWattage(cpu, gpu) { return Math.max(650, Math.ceil((cpu.tdp + gpu.watt + 250) / 50) * 50); }
 function compatibilityWarnings(parts) {
   const warnings = [];
@@ -125,16 +123,9 @@ function bottleneckWarning(parts) {
   if (cpuRank - gpuRank >= 3) return 'CPUに対してGPUが控えめです。ゲーム中心ならGPUを上げた方が満足度が高いかもしれません。';
   return null;
 }
-function partLinks(label, part) {
-  return `<div class="store-links"><a href="${makeAmazonUrl(part.name + ' ' + label)}" target="_blank" rel="noopener noreferrer">Amazonで見る</a><a href="${makeRakutenUrl(part.name + ' ' + label)}" target="_blank" rel="noopener noreferrer">楽天で見る</a></div>`;
-}
-function applyPreset(id) {
-  const preset = presets.find((item) => item.id === id);
-  if (!preset) return;
-  Object.entries(preset.picks).forEach(([key, value]) => { document.getElementById(`${key}-select`).value = value; });
-  renderEstimate();
-  document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
+function partLinks(label, part) { return `<div class="store-links"><a href="${makeAmazonUrl(part.name + ' ' + label)}" target="_blank" rel="noopener noreferrer">Amazonで見る</a><a href="${makeRakutenUrl(part.name + ' ' + label)}" target="_blank" rel="noopener noreferrer">楽天で見る</a></div>`; }
+function applyState(state) { Object.entries(state).forEach(([key, value]) => { const select = document.getElementById(`${key}-select`); if (select && select.querySelector(`option[value="${value}"]`)) select.value = value; }); }
+function applyPreset(id) { const preset = presets.find((item) => item.id === id); if (!preset) return; applyState(preset.picks); renderEstimate(); document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
 function renderPresets() {
   const grid = document.getElementById('preset-grid');
   grid.innerHTML = presets.map((preset) => `<article class="preset-card"><h3>${preset.title}</h3><p>${preset.description}</p><button type="button" class="preset-button" data-preset="${preset.id}">このたたき台を使う</button></article>`).join('');
@@ -147,21 +138,14 @@ function updateShareUrl(parts) {
   history.replaceState({}, '', url);
   return url;
 }
-function saveState() {
-  const parts = getSelections();
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ cpu: parts.CPU.id, gpu: parts.GPU.id, motherboard: parts.Motherboard.id, cooler: parts.Cooler.id, memory: parts.Memory.id, storage: parts.Storage.id, psu: parts.PSU.id, case: parts.Case.id, os: parts.OS.id }));
-}
-function applySavedState(saved) {
-  Object.entries(saved).forEach(([key, value]) => {
-    const select = document.getElementById(`${key}-select`);
-    if (select && select.querySelector(`option[value="${value}"]`)) select.value = value;
-  });
-}
+function currentState(parts) { return { cpu: parts.CPU.id, gpu: parts.GPU.id, motherboard: parts.Motherboard.id, cooler: parts.Cooler.id, memory: parts.Memory.id, storage: parts.Storage.id, psu: parts.PSU.id, case: parts.Case.id, os: parts.OS.id }; }
+function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(currentState(getSelections()))); }
 function loadFromUrl() {
   const params = new URLSearchParams(location.search);
   const state = {};
   ['cpu','gpu','motherboard','cooler','memory','storage','psu','case','os'].forEach((key) => { const value = params.get(key); if (value) state[key] = value; });
-  if (Object.keys(state).length) applySavedState(state);
+  if (Object.keys(state).length) { applyState(state); showToast('共有された構成を読み込みました！'); return true; }
+  return false;
 }
 function setupResume() {
   const saved = localStorage.getItem(STORAGE_KEY);
@@ -169,61 +153,71 @@ function setupResume() {
   const button = document.getElementById('resume-button');
   button.hidden = false;
   button.addEventListener('click', () => {
-    applySavedState(JSON.parse(saved));
+    applyState(JSON.parse(saved));
     renderEstimate();
     button.hidden = true;
+    showToast('前回の構成を復元しました。');
   });
+}
+function resetBuild() {
+  applyState(DEFAULT_BUILD);
+  history.replaceState({}, '', location.pathname);
+  localStorage.removeItem(STORAGE_KEY);
+  renderEstimate();
+  showToast('構成を初期状態に戻しました。');
 }
 function renderEstimate() {
   const parts = getSelections();
   const total = totalPrice(parts);
+  const usage = estimatedUsage(parts.CPU, parts.GPU);
   const recWatt = recommendedWattage(parts.CPU, parts.GPU);
   const warnings = compatibilityWarnings(parts);
   const bottleneck = bottleneckWarning(parts);
   const shareUrl = updateShareUrl(parts);
   saveState();
-  document.getElementById('floating-total').textContent = `現在の合計: ${formatYen(total)}`;
+  document.getElementById('floating-total').innerHTML = `<span>現在の合計: ${formatYen(total)}</span><button type="button" id="copy-share-inline">URLをコピー</button>`;
   const partsHtml = Object.entries(parts).map(([label, part]) => `<div class="part"><div class="label">${label}</div><div><div class="name">${part.name}</div><div class="price">目安価格: ${formatYen(part.price)}</div>${partLinks(label, part)}</div></div>`).join('');
   const warningsHtml = warnings.length ? `<div class="warning-box"><strong>互換性 / 注意点</strong><ul>${warnings.map((w) => `<li>${w}</li>`).join('')}</ul></div>` : `<div class="ok-box"><strong>互換性チェック</strong><p>大きな不一致は見つかっていません。</p></div>`;
   const bottleneckHtml = bottleneck ? `<div class="warning-box subtle"><strong>簡易ボトルネック判定</strong><p>${bottleneck}</p></div>` : '';
+  const powerMeter = `<div class="power-box"><strong>消費電力メーター</strong><div class="power-stats"><span>推定消費電力: ${usage}W</span><span>推奨電源: ${recWatt}W以上</span><span>選択電源: ${parts.PSU.watt}W</span></div><div class="meter"><div class="meter-fill" style="width:${Math.min(100, Math.round((usage / parts.PSU.watt) * 100))}%"></div></div><p class="muted">選択電源に対して、どのくらい余裕があるかの目安です。</p></div>`;
   const casePreview = `<div class="case-preview"><strong>ケースのイメージ</strong><img src="${parts.Case.image}" alt="${parts.Case.name}" /></div>`;
   document.getElementById('result').innerHTML = `
     <h2>現在の見積もり</h2>
     <div class="summary">
       <span class="badge highlight">構成合計目安: ${formatYen(total)}</span>
-      <span class="badge">推奨電源: ${recWatt}W以上</span>
+      <button type="button" class="ghost-button" id="copy-share-main">この構成のURLをコピー</button>
       <span class="badge">OS込み</span>
     </div>
     <p class="lead">自分で選んだパーツ構成の概算金額です。足りないパーツも含めて、ちゃんと1台分の見積もりになるようにしています。</p>
     ${warningsHtml}
     ${bottleneckHtml}
+    ${powerMeter}
     <div class="estimate-box"><strong>ざっくり総額</strong><p>${formatYen(total)} 前後</p><span>※ 価格は相場ベースの目安。セールや在庫で変動します。</span></div>
     <div class="share-box"><strong>この構成を共有する</strong><p class="muted">URLをコピーして「この構成どう？」と相談できます。</p><div class="share-actions"><input type="text" readonly value="${shareUrl}" id="share-url" /><button type="button" id="copy-share">URLをコピー</button></div></div>
     ${casePreview}
     <div class="parts">${partsHtml}</div>
     <div class="adbox"><strong>見積もりの見方</strong><p class="muted">まずは CPU・GPU・マザーボード・クーラー・電源の整合性を見ると失敗しにくい。Windows代も含めて総額を見るのが初心者には重要です。</p></div>
   `;
-  document.getElementById('copy-share').addEventListener('click', async () => {
-    try { await navigator.clipboard.writeText(shareUrl); document.getElementById('copy-share').textContent = 'コピー済み'; setTimeout(() => { document.getElementById('copy-share').textContent = 'URLをコピー'; }, 1500); }
-    catch { const input = document.getElementById('share-url'); input.select(); document.execCommand('copy'); }
+  ['copy-share','copy-share-main','copy-share-inline'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(shareUrl); showToast('共有URLをコピーしました。'); }
+      catch { const input = document.getElementById('share-url'); if (input) { input.select(); document.execCommand('copy'); } }
+    });
   });
 }
-
-function bindHelpButtons() {
-  document.querySelectorAll('[data-help]').forEach((button) => {
-    button.addEventListener('click', () => { document.getElementById('help-text').textContent = helpTexts[button.dataset.help] || '説明は準備中です。'; });
-  });
-}
-function refreshSelects() {
-  ['cpu','gpu','motherboard','cooler','memory','storage','psu','case','os'].forEach((key) => populateSelect(key, `${key}-select`));
-}
+function bindHelpButtons() { document.querySelectorAll('[data-help]').forEach((button) => button.addEventListener('click', () => { document.getElementById('help-text').textContent = helpTexts[button.dataset.help] || '説明は準備中です。'; })); }
+function refreshSelects() { ['cpu','gpu','motherboard','cooler','memory','storage','psu','case','os'].forEach((key) => populateSelect(key, `${key}-select`)); }
 
 document.getElementById('brand-filter').addEventListener('change', () => { refreshSelects(); renderEstimate(); });
 document.getElementById('sort-order').addEventListener('change', () => { refreshSelects(); renderEstimate(); });
+document.getElementById('reset-button').addEventListener('click', resetBuild);
 refreshSelects();
 renderPresets();
-loadFromUrl();
+const loadedFromUrl = loadFromUrl();
 setupResume();
 bindHelpButtons();
 document.getElementById('pc-form').addEventListener('submit', (event) => { event.preventDefault(); renderEstimate(); });
+if (!loadedFromUrl) applyState(DEFAULT_BUILD);
 renderEstimate();

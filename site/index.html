@@ -4,7 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PCgene - 自作PC見積もりジェネレーター</title>
-    <meta name="description" content="CPU・GPU・メモリ・SSD・電源・ケースを自分で選んで、初心者でもわかりやすくPC構成の見積もりを作れるPCgene。" />
+    <meta name="description" content="CPU・GPU・マザーボード・クーラー・OSまで自分で選んで、初心者でもわかりやすくPC構成の見積もりを作れるPCgene。" />
+    <meta property="og:title" content="PCgene - 自作PC見積もりジェネレーター" />
+    <meta property="og:description" content="好きなパーツを選んでPC構成の見積もりを作成。初心者向けの互換性警告や価格目安つき。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://stone0141.github.io/PCgene/" />
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -15,14 +20,14 @@
           <p class="eyebrow">PCgene / Builder</p>
           <h1>好きなパーツを選んで、<br />その場でPC見積もり。</h1>
           <p class="lead">
-            もう「おすすめ構成を眺めるだけ」ではなく、CPU・GPU・メモリ・SSD・電源・ケースを自分で選んで、
-            構成金額をすぐ確認できる形にした。初心者でも比較しやすいように、各パーツには商品リンクも付けている。
+            CPU・GPU・マザーボード・クーラー・メモリ・SSD・電源・ケース・OSまで自分で選べる。
+            互換性や電源の目安も見ながら、初心者でも失敗しにくい構成を作れるようにした。
           </p>
           <div class="hero-points">
             <span>最新寄りパーツ</span>
-            <span>自分で選べる</span>
-            <span>価格目安つき</span>
-            <span>Amazon / 楽天導線あり</span>
+            <span>互換性チェック</span>
+            <span>推奨電源表示</span>
+            <span>URL共有対応</span>
           </div>
         </div>
       </section>
@@ -30,8 +35,8 @@
       <section class="quick-presets card">
         <div class="section-head">
           <p class="eyebrow">Quick Start</p>
-          <h2>まずは用途別のたたき台から</h2>
-          <p class="muted">迷うなら、ここから近い構成を読み込んでから調整すればいい。</p>
+          <h2>まずは目的に近い構成から</h2>
+          <p class="muted">たたき台を読み込んでから、自分好みにパーツを調整できる。</p>
         </div>
         <div class="preset-grid" id="preset-grid"></div>
       </section>
@@ -41,17 +46,27 @@
           <h2>パーツを選んで見積もる</h2>
 
           <label>
-            <span>CPU</span>
+            <span>CPU <button type="button" class="help-inline" data-help="cpu">?</button></span>
             <select name="cpu" id="cpu-select" required></select>
           </label>
 
           <label>
-            <span>GPU</span>
+            <span>GPU <button type="button" class="help-inline" data-help="gpu">?</button></span>
             <select name="gpu" id="gpu-select" required></select>
           </label>
 
           <label>
-            <span>メモリ</span>
+            <span>マザーボード <button type="button" class="help-inline" data-help="motherboard">?</button></span>
+            <select name="motherboard" id="motherboard-select" required></select>
+          </label>
+
+          <label>
+            <span>CPUクーラー <button type="button" class="help-inline" data-help="cooler">?</button></span>
+            <select name="cooler" id="cooler-select" required></select>
+          </label>
+
+          <label>
+            <span>メモリ <button type="button" class="help-inline" data-help="memory">?</button></span>
             <select name="memory" id="memory-select" required></select>
           </label>
 
@@ -61,7 +76,7 @@
           </label>
 
           <label>
-            <span>電源</span>
+            <span>電源 <button type="button" class="help-inline" data-help="psu">?</button></span>
             <select name="psu" id="psu-select" required></select>
           </label>
 
@@ -70,21 +85,24 @@
             <select name="case" id="case-select" required></select>
           </label>
 
+          <label>
+            <span>OS</span>
+            <select name="os" id="os-select" required></select>
+          </label>
+
           <button type="submit">この構成で見積もる</button>
 
-          <div class="mini-info">
-            <p><strong>このページでできること</strong></p>
-            <ul>
-              <li>好きなパーツを組み合わせて金額確認</li>
-              <li>各パーツの商品ページへ移動</li>
-              <li>用途別のたたき台を読み込んで微調整</li>
-            </ul>
+          <div id="help-box" class="mini-info help-box">
+            <p><strong>パーツの見方</strong></p>
+            <p id="help-text">「？」を押すと、初心者向けの簡単な選び方が表示される。</p>
           </div>
         </form>
 
         <section id="result" class="card result-panel"></section>
       </section>
     </main>
+
+    <div class="floating-total" id="floating-total">現在の合計: 約0円</div>
 
     <script src="./app.js"></script>
   </body>

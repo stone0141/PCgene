@@ -32,6 +32,10 @@
         </div>
       </section>
 
+      <section class="notice-bar card">
+        <p><strong>PR表記:</strong> 当サイトはアフィリエイト広告を利用しています。価格は変動するため、最終的な金額・在庫は各ショップで確認してください。</p>
+      </section>
+
       <section class="quick-presets card">
         <div class="section-head">
           <p class="eyebrow">Quick Start</p>
@@ -43,7 +47,31 @@
 
       <section class="grid">
         <form id="pc-form" class="card form-panel">
-          <h2>パーツを選んで見積もる</h2>
+          <div class="panel-head">
+            <h2>パーツを選んで見積もる</h2>
+            <button type="button" class="ghost-button" id="resume-button" hidden>前回の続きから再開</button>
+          </div>
+
+          <div class="toolbar">
+            <label>
+              <span>メーカー絞り込み</span>
+              <select id="brand-filter">
+                <option value="all">すべて</option>
+                <option value="amd">AMD</option>
+                <option value="intel">Intel</option>
+                <option value="nvidia">NVIDIA系GPU</option>
+                <option value="radeon">Radeon系GPU</option>
+              </select>
+            </label>
+            <label>
+              <span>価格順</span>
+              <select id="sort-order">
+                <option value="default">標準</option>
+                <option value="price-asc">安い順</option>
+                <option value="price-desc">高い順</option>
+              </select>
+            </label>
+          </div>
 
           <label>
             <span>CPU <button type="button" class="help-inline" data-help="cpu">?</button></span>
